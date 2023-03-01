@@ -11,79 +11,91 @@ datasource db {
 }
 
 model User {
-  id                   Int          @id @default(autoincrement())
+  id                   String       @id @default(uuid())
   email                String       @unique
   password             String
-  givenName            String
-  familyName           String
+  givenName            String       @map("given_name")
+  familyName           String       @map("family_name")
   about                String?
-  dateOfBirth          DateTime?
-  createdAt            DateTime     @default(now())
+  dateOfBirth          DateTime?    @map("date_of_birth")
+  createdAt            DateTime     @default(now()) @map("created_at")
+  updatedAt            DateTime     @default(now()) @map("updated_at")
   Post                 Post[]
   requestingFriendship Friendship[] @relation(name: "requestingUser")
   requestedFriendship  Friendship[] @relation(name: "requestedUser")
   Like                 Like[]
   Comment              Comment[]
   Share                Share[]
+
+  @@map("user")
 }
 
 model Post {
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default(uuid())
   content       String?
-  mediaLocation String?
+  mediaLocation String?   @map("media_location")
   author        User      @relation(fields: [userId], references: [id])
-  userId        Int
-  totalLikes    Int
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  userId        String    @map("user_id")
+  totalLikes    Int       @map("total_likes")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
   Like          Like[]
   Comment       Comment[]
   Share         Share[]
-}
 
-model Share {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    Int
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("post")
 }
 
 model Friendship {
   requestingUser   User     @relation(name: "requestingUser", fields: [requestingUserId], references: [id])
-  requestingUserId Int
+  requestingUserId String   @map("requesting_user_id")
   requestedUser    User     @relation(name: "requestedUser", fields: [requestedUserId], references: [id])
-  requestedUserId  Int
-  createdAt        DateTime @default(now())
+  requestedUserId  String   @map("requested_user_id")
+  createdAt        DateTime @default(now()) @map("created_at")
 
   @@id([requestingUserId, requestedUserId])
+  @@map("friendship")
+}
+
+model Share {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String   @map("post_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("share")
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   post      Post     @relation(fields: [postId], references: [id])
-  postId    Int
+  postId    String   @map("post_id")
   user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String   @map("user_id")
   content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   Like      Like[]
+
+  @@map("comment")
 }
 
 model Like {
-  id            Int      @id @default(autoincrement())
-  post          Post?    @relation(fields: [postId], references: [id])
-  postId        Int?
-  comment       Comment? @relation(fields: [postCommentId], references: [id])
-  postCommentId Int?
-  likedEntity   Entity
-  user          User     @relation(fields: [userId], references: [id])
-  userId        Int
-  createdAt     DateTime @default(now())
+  id          String   @id @default(uuid())
+  post        Post?    @relation(fields: [postId], references: [id])
+  postId      String?  @map("post_id")
+  comment     Comment? @relation(fields: [commentId], references: [id])
+  commentId   String?  @map("comment_id")
+  likedEntity Entity   @map("liked_entity")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @map("user_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("like")
 }
 
 enum Entity {
