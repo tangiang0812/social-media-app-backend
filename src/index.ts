@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 
 /* import connectDatabase from "./db/connection"; */
-
 dotenv.config();
 
 /* connectDatabase(); */
