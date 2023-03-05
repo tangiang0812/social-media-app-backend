@@ -1,17 +1,14 @@
-import express from "express";
 import dotenv from "dotenv";
+import express from "express";
 
-/* import connectDatabase from "./db/connection"; */
+import postRoutes from "./routes/postRoutes";
+
 dotenv.config();
-
-/* connectDatabase(); */
 
 const app = express();
 
-app.get("/login", (req, res) => {
-  res.send("You are logged in");
-});
+app.use("/posts", postRoutes);
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log(`Listening on port ${process.env.PORT}`);
 });
