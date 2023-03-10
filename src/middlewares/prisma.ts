@@ -1,4 +1,4 @@
-import prisma from "../db/prisma";
+import prisma from "../config/prisma";
 import bcrypt from "bcrypt";
 
 const prismaMiddleware = () => {

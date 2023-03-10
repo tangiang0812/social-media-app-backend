@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import prisma from "../db/prisma";
+import { NextFunction, Request, Response } from "express";
+import prisma from "../config/prisma";
 
 interface RegisterUserReqBody {
   email: string;
@@ -25,11 +25,16 @@ const registerUser = async (
 };
 
 const authorizeUser = async (req: Request, res: Response) => {
-  res.send("aloalo");
+  res.send(req.user);
 };
 
-const logoutUser = async (req: Request, res: Response) => {
-  res.send("aloalo");
+const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.send(req.user);
+  });
 };
 
 export { registerUser, authorizeUser, logoutUser };
